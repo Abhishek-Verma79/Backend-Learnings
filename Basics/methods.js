@@ -25,9 +25,11 @@ let users = [
 
 //mini app
 const userRouter = express.Router();
+const authRouter = express.Router();
 
 //base route, router to use
 app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 userRouter
   .route("/")
@@ -37,6 +39,11 @@ userRouter
   .delete(deleteUser);
 
 userRouter.route("/:id").get(getUserById);
+
+authRouter
+.route('/signup')
+.get(getSignUp)
+.post(postSignUp);
 
 // app.get('/user',);
 
@@ -49,10 +56,14 @@ userRouter.route("/:id").get(getUserById);
 // app.delete('/user',);
 
 //params
-app.get("/user/:username", (req, res) => {
-  console.log(req.params);
-  console.log(req.params.username);
-  res.send("user id received!");
+// app.get("/user/:username", (req, res) => {
+//   console.log(req.params);
+//   console.log(req.params.username);
+//   res.send("user id received!");
+// });
+
+app.get("/", (req, res) => {
+  res.send("<h1>Hello world!</h1>");
 });
 
 function getUser(req, res) {
@@ -100,4 +111,8 @@ function getUserById(req, res) {
     message: "Req received",
     data: obj,
   });
+}
+
+function getSignUp(req,res){
+  res.sendFile('');
 }
