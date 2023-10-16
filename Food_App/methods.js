@@ -1,7 +1,7 @@
 const express = require("express");
 
 const app = express();
-const mongoose = require('mongoose');
+const userModel = require('./models/userModel');
 
 //middleware function
 app.use(express.json());
@@ -41,13 +41,10 @@ userRouter
 
 userRouter.route("/:id").get(getUserById);
 
-authRouter.route("/signup")
-  .get(middleware,getSignUp)
-  .post(postSignUp);
+authRouter.route("/signup").get(middleware, getSignUp).post(postSignUp);
 
-
-function middleware(req,res,next){
-  console.log('middleware encountered!');
+function middleware(req, res, next) {
+  console.log("middleware encountered!");
   next();
 }
 
@@ -76,10 +73,10 @@ async function getUsers(req, res) {
   // console.log(req.query);
   // res.send(users);
   // let allUsers = await userModel.find();
-  let allUsers = await userModel.findOne({name:"Abhishek"});
+  let allUsers = await userModel.findOne({ name: "Abhishek" });
   res.json({
     message: "list of all users",
-    data: allUsers
+    data: allUsers,
   });
 }
 
@@ -95,7 +92,10 @@ function postUser(req, res) {
 async function updateUser(req, res) {
   console.log("req body -> ", req.body);
   let dataToBeUpdated = req.body;
-  let user = await userModel.findOneAndUpdate({email: "abc@gmail.com"}, dataToBeUpdated);
+  let user = await userModel.findOneAndUpdate(
+    { email: "abc@gmail.com" },
+    dataToBeUpdated
+  );
   // for (let key in dataToBeUpdated) {
   //   users[key] = dataToBeUpdated[key];
   // }
@@ -110,7 +110,7 @@ async function deleteUser(req, res) {
   let user = await userModel.findOneAndDelete(dataToBeDeleted);
   res.json({
     message: "data has been deleted!",
-    data: user
+    data: user,
   });
 }
 
@@ -142,52 +142,3 @@ async function postSignUp(req, res) {
   });
 }
 
-const db_link = 'mongodb+srv://admin:pp8zmIXzAx73h5zI@cluster0.lapqusi.mongodb.net/?retryWrites=true&w=majority';
-
-mongoose.connect(db_link)
-.then(function(db){
-  // console.log(db);
-  console.log('db connected!');
-})
-.catch(function(err){
-  console.log(err);
-});
-
-
-const userSchema = mongoose.Schema({
-  name:{
-    type: String,
-    required: true
-  }, 
-  email:{
-    type: String,
-    required: true,
-    unique: true
-  },
-  password:{
-    type: String,
-    required: true,
-    minLength: 8
-  },
-  confirmPassword:{
-    type: String,
-    required: true,
-    minLength: 8
-  }
-  
-});
-
-//model
-const userModel = mongoose.model('userModel',userSchema);
-
-// (async function createUser(){
-//   let user = {
-//     name: "Jasbir",
-//     email: "abcd@gmail.com",
-//     password: "12345678",
-//     confirmPassword: "12345678"
-//   };
-//   let data = await userModel.create(user);
-//   console.log(data);
-
-// })();
