@@ -2,9 +2,11 @@ const express = require("express");
 
 const app = express();
 const userModel = require('./models/userModel');
+const cookieParser = require("cookie-parser");
 
 //middleware function
 app.use(express.json());
+app.use(cookieParser());
 
 app.listen(3000);
 
@@ -39,9 +41,21 @@ userRouter
   .patch(updateUser)
   .delete(deleteUser);
 
+userRouter
+  .route('/getCookies')
+  .get(getCookies);
+
+userRouter
+  .route('/setCookies')
+  .get(setCookies);
+
+
 userRouter.route("/:id").get(getUserById);
 
 authRouter.route("/signup").get(middleware, getSignUp).post(postSignUp);
+
+
+
 
 function middleware(req, res, next) {
   console.log("middleware encountered!");
@@ -140,5 +154,20 @@ async function postSignUp(req, res) {
     message: "user signed up",
     data: user,
   });
+}
+
+
+function setCookies(req,res){
+  // res.setHeader('Set-Cookie','isLoggedIn=true');
+  
+  // using cookie parser package
+  res.cookie('isLoggedIn',true,{maxAge:1000*60*60*24, secure: true, httpOnly: true});
+  res.send('cookies has been set');
+}
+
+function getCookies(req,res){
+  let cookies = req.cookies;
+  console.log(cookies);
+  res.send("cookies received");
 }
 
