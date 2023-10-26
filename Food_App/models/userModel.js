@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const emailValidator = require('email-validator');
 const bcrypt = require('bcrypt');
+
 const db_link =
   "mongodb+srv://admin:pp8zmIXzAx73h5zI@cluster0.lapqusi.mongodb.net/?retryWrites=true&w=majority";
 
@@ -59,11 +60,11 @@ userSchema.pre('save', function(){
   this.confirmPassword = undefined;
 });
 
-userSchema.pre('save', async function(){
-    let salt = await bcrypt.genSalt();
-    let hashedString = await bcrypt.hash(this.password,salt);
-    this.password = hashedString;
-});
+// userSchema.pre('save', async function(){
+//     let salt = await bcrypt.genSalt();
+//     let hashedString = await bcrypt.hash(this.password,salt);
+//     this.password = hashedString;
+// });
 
 
 
